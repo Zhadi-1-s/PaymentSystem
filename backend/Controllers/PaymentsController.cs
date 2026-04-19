@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using backend.DTO;
 using backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
@@ -16,10 +18,13 @@ public class PaymentsController : ControllerBase
     }
 
     // POST /api/payments
+    [Authorize] 
     [HttpPost]
     public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequest request)
     {
-        var result = await _paymentService.CreatePaymentAsync(request);
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var result = await _paymentService.CreatePaymentAsync(request,userId);
         return Ok(result);
     }
 
@@ -31,7 +36,17 @@ public class PaymentsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
+    [HttpGet("user")]
+    public async Task<IActionResult> GetUserPayments()
+    {
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var result = await _paymentService.GetUserPaymentsAsync(userId);
+        return Ok(result);
+    }
+
     // GET /api/payments/stats
+    [Authorize]
     [HttpGet("stats")]
     public async Task<IActionResult> GetStats()
     {

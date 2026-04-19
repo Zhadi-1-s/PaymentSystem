@@ -9,24 +9,26 @@ public class PaymentService
 {
     private readonly AppDbContext _db;
 
-    // AppDbContext is injected automatically — like NestJS constructor injection
     public PaymentService(AppDbContext db)
     {
         _db = db;
     }
 
-    public async Task<PaymentResponse> CreatePaymentAsync(CreatePaymentRequest request)
+    public async Task<PaymentResponse> CreatePaymentAsync(CreatePaymentRequest request,Guid userId)
     {
-        var payment = new Payment
+        var user = await _db.Users.FindAsync(userId);
+
+       var payment = new Payment
         {
             WalletNumber = request.WalletNumber,
             Account      = request.Account,
-            Email        = request.Email,
-            Phone        = request.Phone,
+            Email        = user?.Email ?? request.Email,   // prefer user's email
+            Phone        = user?.Phone ?? request.Phone,   // prefer user's phone
             Amount       = request.Amount,
             Currency     = request.Currency,
             Comment      = request.Comment,
-            Status       = PaymentStatus.Created   // always Created for now
+            Status       = PaymentStatus.Created,
+            UserId       = userId                          //  link to user
         };
 
         _db.Payments.Add(payment);
@@ -38,6 +40,16 @@ public class PaymentService
     public async Task<List<PaymentResponse>> GetAllPaymentsAsync()
     {
         var payments = await _db.Payments
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync();
+
+        return payments.Select(MapToResponse).ToList();
+    }
+
+    public async Task<List<PaymentResponse>> GetUserPaymentsAsync(Guid userId)
+    {
+        var payments = await _db.Payments
+            .Where(p => p.UserId == userId)
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
 
