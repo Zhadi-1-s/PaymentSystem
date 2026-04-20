@@ -1,5 +1,4 @@
 # PaymentSystem
-# PaymentSystem
 
 Система управления платежами. Проект состоит из клиентской части на Angular и серверной части на .NET 10.
 
@@ -30,6 +29,16 @@
 
 ### 2. Запуск Backend
 Перейдите в корневую директорию бэкенд-проекта и выполните:
-```bash
+
 dotnet restore
 dotnet run --launch-profile https
+
+### 3. Запуск Frontend
+Запуск Frontend
+Перейдите в директорию frontend:
+
+# Установка всех зависимостей
+npm install
+
+# Запуск приложения
+npm start
