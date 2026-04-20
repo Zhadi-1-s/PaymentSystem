@@ -22,28 +22,82 @@
       </div>
     </div>
 
+    <!-- Selected company info -->
+    <div class="selected-company" *ngIf="selectedCompany">
+      <div class="selected-company-info">
+        <span class="selected-label">Paying to</span>
+        <span class="selected-name">{{ selectedCompany.name }}</span>
+        <span class="selected-rules">
+          {{ selectedCompany.allowedCurrencies.join(', ') }} &nbsp;|&nbsp;
+          ${{ selectedCompany.minAmount }} – ${{ selectedCompany.maxAmount | number }}
+        </span>
+      </div>
+      <button class="btn-change" (click)="changeCompany()">Change</button>
+    </div>
+
+    <div class="no-company" *ngIf="!selectedCompany">
+      <p>No company selected</p>
+      <button class="btn-secondary" (click)="changeCompany()">Choose a company</button>
+    </div>
+
     <button class="btn-danger" (click)="logout()">Sign out</button>
   </div>
 
   <div class="payments-section">
 
     <app-create-payment-modal
-        [isOpen]="isModalOpen"
-        (closed)="isModalOpen = false"
-        (created)="onPaymentCreated($event)"
-        ></app-create-payment-modal>
+      [isOpen]="isModalOpen"
+      (closed)="isModalOpen = false"
+      (created)="onPaymentCreated($event)"
+    ></app-create-payment-modal>
 
     <div class="section-header">
       <h2>My payments</h2>
-      <button class="btn-new" (click)="isModalOpen = true">+ New payment</button>
+      <div class="section-actions">
+        <span class="count">{{ payments.length }} total</span>
+        <button class="btn-new" (click)="isModalOpen = true" [disabled]="!selectedCompany">
+          + New payment
+        </button>
+      </div>
+    </div>
 
-      <span class="count">{{ payments.length }} total</span>
+    <div class="no-company-hint" *ngIf="!selectedCompany">
+      Select a company first to make a payment
+    </div>
+
+    <div class="filters" *ngIf="payments.length > 0 || filters.status || filters.currency">
+      <select [(ngModel)]="filters.status" (change)="applyFilters(filters)">
+        <option value="">All statuses</option>
+        <option value="Created">Created</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+
+      <select [(ngModel)]="filters.currency" (change)="applyFilters(filters)">
+        <option value="">All currencies</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="RUB">RUB</option>
+      </select>
+
+      <input
+        type="date"
+        [(ngModel)]="filters.dateFrom"
+        (change)="applyFilters(filters)"
+      />
+
+      <input
+        type="date"
+        [(ngModel)]="filters.dateTo"
+        (change)="applyFilters(filters)"
+      />
+
+      <button class="btn-reset" (click)="resetFilters()">Reset</button>
     </div>
 
     <div class="loading" *ngIf="loading">Loading...</div>
 
-    <div class="empty" *ngIf="!loading && payments.length === 0">
-      No payments yet
+    <div class="empty" *ngIf="!loading && payments.length === 0 && selectedCompany">
+      No payments yet — create your first one!
     </div>
 
     <div class="table-wrapper" *ngIf="!loading && payments.length > 0">
@@ -51,6 +105,7 @@
         <thead>
           <tr>
             <th>Date</th>
+            <th>Company</th>
             <th>Wallet</th>
             <th>Amount</th>
             <th>Currency</th>
@@ -61,11 +116,14 @@
         <tbody>
           <tr *ngFor="let p of payments">
             <td>{{ p.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+            <td>{{ p.companyName || '—' }}</td>
             <td>{{ p.walletNumber }}</td>
             <td>{{ p.amount }}</td>
             <td>{{ p.currency }}</td>
             <td>
-              <span class="badge" [class.created]="p.status === 'Created'" [class.rejected]="p.status === 'Rejected'">
+              <span class="badge"
+                [class.created]="p.status === 'Created'"
+                [class.rejected]="p.status === 'Rejected'">
                 {{ p.status }}
               </span>
             </td>

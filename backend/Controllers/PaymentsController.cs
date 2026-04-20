@@ -38,10 +38,14 @@ public class PaymentsController : ControllerBase
 
     [Authorize]
     [HttpGet("user")]
-    public async Task<IActionResult> GetUserPayments()
+    public async Task<IActionResult> GetUserPayments(
+        [FromQuery] string? status = null,
+        [FromQuery] string? currency = null,
+        [FromQuery] DateTime? dateFrom = null,
+        [FromQuery] DateTime? dateTo = null)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var result = await _paymentService.GetUserPaymentsAsync(userId);
+        var result = await _paymentService.GetUserPaymentsAsync(userId, status, currency, dateFrom, dateTo);
         return Ok(result);
     }
 

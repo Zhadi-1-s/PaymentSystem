@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Payment,PaymentService } from 'src/app/shared/services/payment.service';
 import { AuthService,User } from 'src/app/shared/services/auth.service';
+import { Company } from 'src/app/shared/services/company.service';
 
 @Component({
   selector: 'app-create-payment-modal',
@@ -18,6 +19,8 @@ export class CreatePaymentModalComponent implements OnInit {
   errorMessage = '';
 
   currencies = ['USD', 'EUR', 'RUB'];
+
+  selectedCompany:Company | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -36,10 +39,19 @@ export class CreatePaymentModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Pre-fill email and phone from logged-in user
+
+    const raw = sessionStorage.getItem('selectedCompany');
+    if (raw) {
+    this.selectedCompany = JSON.parse(raw);
+      
+      this.currencies = this.selectedCompany!.allowedCurrencies;
+      this.form.patchValue({ currency: this.currencies[0] });
+    }
+    
     this.authService.currentUser$.subscribe((user: User | null) => {
       if (user) {
         this.form.patchValue({
+          account:user.name,
           email: user.email,
           phone: user.phone || ''
         });
@@ -56,6 +68,11 @@ export class CreatePaymentModalComponent implements OnInit {
     if (this.form.invalid) return;
     this.loading = true;
     this.errorMessage = '';
+
+    const payload = {
+      ...this.form.value,
+      companyid:this.selectedCompany?.id
+    }
 
     this.paymentService.createPayment(this.form.value).subscribe({
       next: (payment) => {

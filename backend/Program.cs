@@ -26,7 +26,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=payments.db"));
 
 builder.Services.AddScoped<PaymentService>();
-builder.Services.AddScoped<AuthService>();  // 👈 coming next
+builder.Services.AddScoped<AuthService>();  
+builder.Services.AddScoped<CompanyService>();
 
 // JWT Authentication setup
 var jwtKey = builder.Configuration["Jwt:Key"]!;
@@ -56,7 +57,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAngular");
-app.UseAuthentication();  // 👈 must be before UseAuthorization
+app.UseAuthentication();  
 app.UseAuthorization();
 
 app.MapControllers();

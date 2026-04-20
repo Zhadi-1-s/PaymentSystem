@@ -1,0 +1,67 @@
+<div class="companies-wrapper">
+
+  <div class="companies-header">
+    <h1>Choose a company</h1>
+    <p>Select a company to make a payment. Each company has its own rules.</p>
+  </div>
+
+  <div class="filters">
+    <input
+      type="text"
+      [(ngModel)]="filters.search"
+      (input)="applyFilters()"
+      placeholder="Search by name..."
+      class="search-input"
+    />
+
+    <select [(ngModel)]="filters.currency" (change)="applyFilters()">
+      <option value="">All currencies</option>
+      <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
+    </select>
+
+    <button class="btn-reset" (click)="resetFilters()">Reset</button>
+  </div>
+
+  <div class="loading" *ngIf="loading">Loading companies...</div>
+
+  <div class="companies-grid" *ngIf="!loading">
+    <div
+      class="company-card"
+      *ngFor="let company of companies"
+      (click)="selectCompany(company)"
+    >
+      <div class="company-top">
+        <div class="company-avatar">{{ company.name.charAt(0) }}</div>
+        <div>
+          <h2>{{ company.name }}</h2>
+          <p class="company-desc">{{ company.description }}</p>
+        </div>
+      </div>
+
+      <div class="company-rules">
+        <div class="rule">
+          <span class="rule-label">Currencies</span>
+          <div class="currencies">
+            <span
+              class="currency-badge"
+              *ngFor="let c of company.allowedCurrencies"
+            >{{ c }}</span>
+          </div>
+        </div>
+
+        <div class="rule">
+          <span class="rule-label">Min amount</span>
+          <span class="rule-value">${{ company.minAmount }}</span>
+        </div>
+
+        <div class="rule">
+          <span class="rule-label">Max amount</span>
+          <span class="rule-value">${{ company.maxAmount | number }}</span>
+        </div>
+      </div>
+
+      <button class="btn-select">Select & pay →</button>
+    </div>
+  </div>
+
+</div>

@@ -10,6 +10,14 @@
 
       <div class="modal-body">
 
+        <div class="company-info" *ngIf="selectedCompany">
+          <div class="company-info-name">{{ selectedCompany.name }}</div>
+          <div class="company-info-rules">
+            Currencies: {{ selectedCompany.allowedCurrencies.join(', ') }} &nbsp;|&nbsp;
+            Amount: ${{ selectedCompany.minAmount }} – ${{ selectedCompany.maxAmount | number }}
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label>Wallet number *</label>
@@ -24,18 +32,6 @@
             </span>
           </div>
 
-          <div class="form-group">
-            <label>Account / User ID *</label>
-            <input
-              type="text"
-              formControlName="account"
-              placeholder="user123"
-              [class.error]="account.invalid && account.touched"
-            />
-            <span class="error-msg" *ngIf="account.invalid && account.touched">
-              Required
-            </span>
-          </div>
         </div>
 
         <div class="form-row">

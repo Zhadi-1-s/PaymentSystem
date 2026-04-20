@@ -25,6 +25,9 @@ public class CreatePaymentRequest
     public string Currency { get; set; } = string.Empty;
 
     public string? Comment { get; set; }
+
+    [Required]
+    public Guid CompanyId { get; set; } 
 }
 
 public class PaymentResponse
@@ -39,6 +42,7 @@ public class PaymentResponse
     public string Status { get; set; } = string.Empty;
     public string? Comment { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string? CompanyName { get; set; }
 }
 public class DailyStats
 {

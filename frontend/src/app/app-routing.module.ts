@@ -4,6 +4,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { CompanyComponent } from './pages/company/company.component';
 
 const routes: Routes = [
   // Public routes
@@ -16,6 +17,7 @@ const routes: Routes = [
 
   // Redirects
   { path: '',         redirectTo: 'login', pathMatch: 'full' },
+  { path: 'companies', component: CompanyComponent, canActivate: [AuthGuard] },
   // { path: '**',       redirectTo: 'payments' }
 ];
 @NgModule({
