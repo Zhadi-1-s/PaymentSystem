@@ -53,10 +53,6 @@ public class PaymentService
 
         _db.Payments.Add(payment);
         await _db.SaveChangesAsync();
-        // 👇 ВОТ ЭТО ДОБАВИТЬ
-        await _db.Entry(payment)
-            .Reference(p => p.Company)
-            .LoadAsync();
 
         return MapToResponse(payment);
     }

@@ -74,11 +74,13 @@ export class CreatePaymentModalComponent implements OnInit {
       companyid:this.selectedCompany?.id
     }
 
-    this.paymentService.createPayment(this.form.value).subscribe({
+    this.paymentService.createPayment(payload).subscribe({
       next: (payment) => {
+        console.log('here is the payment',payment)
         this.created.emit(payment);
         this.close();
         this.loading = false;
+        
       },
       error: () => {
         this.errorMessage = 'Failed to create payment. Try again.';
@@ -93,7 +95,7 @@ export class CreatePaymentModalComponent implements OnInit {
     this.closed.emit();
   }
 
-  // Close modal when clicking backdrop
+  // Close modal
   onBackdropClick(event: MouseEvent): void {
     if ((event.target as HTMLElement).classList.contains('modal-backdrop')) {
       this.close();

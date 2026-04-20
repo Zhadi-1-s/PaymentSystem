@@ -15,6 +15,7 @@ export class ProfileComponent implements OnInit {
   loading = false;
 
   isModalOpen = false;
+  isStatsOpen = false;
 
   filters : PaymentFilters = {};
 
@@ -62,7 +63,7 @@ export class ProfileComponent implements OnInit {
   }
 
   onPaymentCreated(payment: Payment): void {
-    this.payments.unshift(payment);  // add to top of list instantly
+    this.payments.unshift(payment);  // add to top 
   }
 
   changeCompany(): void {

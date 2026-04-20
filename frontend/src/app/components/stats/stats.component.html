@@ -1,0 +1,56 @@
+<div class="modal-backdrop" (click)="onClose()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Статистика платежей</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="stats$ | async as stats; else loading">
+      
+      <div class="form-row">
+        <div class="stats-card">
+          <span class="stats-label">Общая сумма</span>
+          <span class="stats-value">{{ stats.totalAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="stats-card">
+          <span class="stats-label">Транзакции</span>
+          <span class="stats-value">{{ stats.totalTransactions }}</span>
+        </div>
+      </div>
+
+      <div class="breakdown-container">
+        <h3 class="section-title">История по дням</h3>
+        
+        <div class="breakdown-list">
+          <div class="breakdown-header">
+            <span>Дата</span>
+            <span>Сумма</span>
+            <span>Кол-во</span>
+          </div>
+          
+          <div class="breakdown-item" *ngFor="let day of stats.dailyBreakdown">
+            <span class="day-date">{{ day.date | date:'dd.MM.yyyy' }}</span>
+            <span class="day-amount">{{ day.total | number:'1.2-2' }}</span>
+            <span class="day-count">{{ day.count }}</span>
+          </div>
+
+          <div class="empty-state" *ngIf="stats.dailyBreakdown.length === 0">
+            Нет данных за выбранный период
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="onClose()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="modal-body loading-state">
+    <div class="spinner-dark"></div>
+    <span>Загрузка данных...</span>
+  </div>
+</ng-template>

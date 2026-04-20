@@ -34,7 +34,7 @@ export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'auth_user';
 
-  // BehaviorSubject — like a signal, components can subscribe to this
+  
   currentUser$ = new BehaviorSubject<User | null>(this.getSavedUser());
 
   constructor(private http: HttpClient, private router: Router) {}
