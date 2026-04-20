@@ -37,8 +37,13 @@ dotnet run --launch-profile https
 Запуск Frontend
 Перейдите в директорию frontend:
 
-# Установка всех зависимостей
+### 🚀 Запуск Frontend (Angular)
+
+# Перейдите в папку фронтенда
+cd frontend
+
+# Установите зависимости
 npm install
 
-# Запуск приложения
-npm start
+# Запустите проект
+ng serve
